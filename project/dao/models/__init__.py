@@ -5,9 +5,5 @@ from .movie import Movie
 from .user import User
 
 __all__ = [
-    "BaseModel", "Genre", "Director", "Movie", "User"
+   "Genre", "Director", "Movie", "User"
 ]
-
-
-
-

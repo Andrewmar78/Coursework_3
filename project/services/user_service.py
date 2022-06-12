@@ -1,63 +1,74 @@
-#  Недоработан
 import base64
 import hashlib
 import hmac
-
-from flask import current_app
+from project.dao.models import User
 from project.dao.user import UserDAO
 from project.constants import PWD_HASH_SALT, PWD_HASH_ITERATIONS
+from project.exceptions import NoUserFound, UserAlreadyExists, IncorrectPassword
 
 
 class UserService:
 	def __init__(self, dao: UserDAO):
 		self.dao = dao
 
-	def get_user_by_name(self, username):
-		return self.dao.get_user_bu_name(username)
+	def get_user_by_email(self, email: str) -> User:
+		user = self.dao.get_user_by_email(email)
+		if not user:
+			raise NoUserFound
+		return user
 
-	def get_one(self, uid):
-		return self.dao.get_one(uid)
+	def create_user(self, user_data: dict) -> User:
+		user = self.dao.get_user_by_email(user_data.get('email'))
+		if user:
+			raise UserAlreadyExists
+		user_data["password"] = self.generate_user_password(user_data["password"])
+		user = self.dao.create_user(user_data)
+		return user
 
-	# def get_hash(self, password):
-	# 	return hashlib.pbkdf2_hmac(
-	# 		'sha256',
-	# 		password.encode('utf-8'),
-	# 		PWD_HASH_SALT,
-	# 		PWD_HASH_ITERATIONS
-	# 	)
+	def update_user(self, user_data: dict, email: str) -> None:
+		self.get_user_by_email(email)
+		if 'password' not in user_data.keys() and 'email' not in user_data.keys():
+			self.dao.update_user_by_email(user_data, email)
 
-	def generate_password_digest(self, password):
+	# def delete(self, uid: int) -> None:
+	# 	self.dao.delete(uid)
+
+	def get_one(self, uid: int) -> User:
+		user = self.dao.get_one(uid)
+		if not user:
+			raise NoUserFound
+		return user
+
+	def generate_password_digest(self, password: str):
 		# from security.py
-		return hashlib.pbkdf2_hmac(
+		""" Создание хэшированного пароля"""
+		hash_digest = hashlib.pbkdf2_hmac(
 			hash_name="sha256",
 			password=password.encode("utf-8"),
 			salt=PWD_HASH_SALT,
-			iterations=PWD_HASH_ITERATIONS,
-			# salt=current_app.config["PWD_HASH_SALT"],
-			# iterations=current_app.config["PWD_HASH_ITERATIONS"],
-			#
+			iterations=PWD_HASH_ITERATIONS
 		)
+		return hash_digest
 
-	def generate_user_password(self, password):
-		# hash_digest = self.get_hash(password)
+	def generate_user_password(self, password: str):
+		"""Создание закодированного из хэша пароля в байтах"""
 		hash_digest = self.generate_password_digest(password)
+		encoded_digest = base64.b64encode(hash_digest)
+		return encoded_digest
 
-		return base64.b64encode(hash_digest)
+	def compare_passwords(self, password_hash, other_password) -> bool:
+		"""Сравнение вводимого и заданного паролей"""
+		decoded_digest = base64.b64decode(password_hash)
+		passed_hash = self.generate_password_digest(other_password)
+		return hmac.compare_digest(decoded_digest, passed_hash)
 
-	def create_user(self, user_data):
-		user_data["password"] = self.generate_user_password(user_data["password"])
-		return self.dao.create_user(user_data)
+	def update_password(self, data: dict, email: str) -> None:
+		user = self.get_user_by_email(email)
+		current_password = data.get('current_password')
+		new_password = data.get('new_password')
 
-	def update(self, user_data):
-		user_data["password"] = self.generate_user_password(user_data["password"])
-		self.dao.update(user_data)
+		if not self.compare_passwords(user.password, current_password):
+			raise IncorrectPassword
 
-	def delete(self, uid):
-		self.dao.delete(uid)
-
-	def compare_passwords(self, password_hash, other_password):
-		return hmac.compare_digest(
-			base64.b64decode(password_hash),
-			self.generate_password_digest(other_password)
-			# self.get_hash(other_password)
-		)
+		data = {'password': self.generate_password_digest(new_password)}
+		self.dao.update_user_by_email(data, email)

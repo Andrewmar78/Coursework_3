@@ -15,5 +15,5 @@ class User(BaseModel):
 
     genre = db.relationship("Genre")
 
-    # def __repr__(self):
-    #     return f"<User '{self.username.title()}'>"
+    def __repr__(self):
+        return f"<User '{self.username.title()}'>"

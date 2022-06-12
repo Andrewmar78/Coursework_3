@@ -2,7 +2,6 @@
 from flask import request
 from flask_restx import Resource, Namespace
 
-from container import user_service
 
 user_ns = Namespace('users')
 

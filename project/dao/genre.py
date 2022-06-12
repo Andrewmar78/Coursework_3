@@ -5,7 +5,7 @@ from project.schemas.genre import GenreSchema
 
 
 class GenreDAO(BaseDAO):
-    def get_by_id(self, genre_id: int) -> Optional[GenreSchema]: # Optional - [GenreSchema] or None
+    def get_by_id(self, genre_id: int) -> Optional[GenreSchema]: # Optional means: [GenreSchema] or None
         genre: Optional[Genre] = self.session.query(Genre).filter(Genre.id == genre_id).scalar()
         # Optional means: genre = [Genre] or None
 

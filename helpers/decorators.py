@@ -2,7 +2,7 @@ import jwt
 from flask import request
 from flask_restx import abort
 
-from constants import SECRET_KEY, ALGORITHM, JWT_SECRET, JWT_ALGORITHM
+from project.constants import SECRET_KEY, JWT_SECRET, JWT_ALGORITHM
 
 
 def auth_required(func):
@@ -12,7 +12,7 @@ def auth_required(func):
         data = request.headers["Authorization"]
         token = data.split("Bearer ")[-1]
         try:
-            jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            jwt.decode(token, SECRET_KEY, algorithms=[JWT_ALGORITHM])
         except Exception as e:
             print("JWT Decode Exception", e)
             abort(401)
@@ -37,5 +37,3 @@ def admin_required(func):
             abort(403)
         return func(*args, **kwargs)
     return wrapper
-
-

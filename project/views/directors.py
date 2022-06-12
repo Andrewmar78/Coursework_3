@@ -8,17 +8,17 @@ directors_ns = Namespace("directors")
 
 
 @directors_ns.route("/")
-class GenresView(Resource):
+class DirectorsView(Resource):
     @directors_ns.response(200, "OK")
     def get(self):
         """Get all directors"""
         return DirectorService(db.session).get_all()
 
 
-@directors_ns.route("/<int:genre_id>")
+@directors_ns.route("/<int:director_id>")
 class DirectorView(Resource):
     @directors_ns.response(200, "OK")
-    @directors_ns.response(404, "Genre is not found")
+    @directors_ns.response(404, "Director is not found")
     def get(self, director_id: int):
         """Get director by id"""
         try:

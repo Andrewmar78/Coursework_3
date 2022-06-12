@@ -1,3 +1,4 @@
+from flask import request
 from flask_restx import abort, Namespace, Resource
 
 from project.exceptions import ItemNotFound

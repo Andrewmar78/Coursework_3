@@ -24,11 +24,6 @@ class GenreService(BaseService):
         return GenreSchema(many=True).dump(genres)
 
     # def get_all(self, page: str = None) -> List[object]:
-    #     """
-    #     Get all items from the db
-    #     :param page: Page number (optional)
-    #     :raises ItemNotFound: If no items found
-    #     """
     #     items = self.dao.get_all(page, sort=False)
     #     if not items:
     #         raise ItemNotFound

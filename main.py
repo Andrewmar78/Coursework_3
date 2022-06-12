@@ -5,7 +5,7 @@ from project.setup_db import db
 from project.views.directors import directors_ns
 from project.views.genres import genres_ns
 from flask_cors import CORS
-
+from project.views.movies import movies_ns
 # import logging
 # logging.basicConfig(filename="basic.log", level=logging.INFO)
 
@@ -34,7 +34,7 @@ def create_app(config):
     api.init_app(app)
     api.add_namespace(genres_ns)
     api.add_namespace(directors_ns)
-    # api.add_namespace(movies_ns)
+    api.add_namespace(movies_ns)
 
 
     db.init_app(app)

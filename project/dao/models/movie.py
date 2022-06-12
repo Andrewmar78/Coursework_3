@@ -17,6 +17,5 @@ class Movie(BaseModel):
     genre = db.relationship("Genre")
     director = db.relationship("Director")
 
-
     def __repr__(self):
         return f"<Movie '{self.title.title()}'>"

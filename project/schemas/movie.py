@@ -13,6 +13,7 @@ class MovieSchema(Schema):
     rating = fields.Float(required=False)
     genre = fields.Nested(GenreSchema)
     director = fields.Nested(DirectorSchema)
+
     # genre_id = fields.Int(required=True)
     # director_id = fields.Int(required=True)
     # status = fields.Str(required=False)

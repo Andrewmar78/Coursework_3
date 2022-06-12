@@ -4,6 +4,7 @@ from project.setup_db import db
 
 class Movie(BaseModel):
     __tablename__ = "movies"
+    __table_args__ = {'extend_existing': True}
 
     title = db.Column(db.String(100), unique=False, nullable=False)
     description = db.Column(db.String(255), unique=True, nullable=True)
@@ -17,5 +18,5 @@ class Movie(BaseModel):
     director = db.relationship("Director")
     # status = db.Column(db.String(10), unique=False, nullable=True)
 
-    # def __repr__(self):
-    #     return f"<Movie '{self.title.title()}'>"
+    def __repr__(self):
+        return f"<Movie '{self.title.title()}'>"

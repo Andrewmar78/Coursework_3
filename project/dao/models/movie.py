@@ -11,8 +11,8 @@ class Movie(BaseModel):
     trailer = db.Column(db.String(255), unique=True, nullable=True)
     year = db.Column(db.Integer, unique=False, nullable=False)
     rating = db.Column(db.Float, unique=False, nullable=True)
-    genre_id = db.Column(db.Integer, db.ForeignKey("genre.id"), nullable=False)
-    director_id = db.Column(db.Integer, db.ForeignKey("director.id"), nullable=False)
+    genre_id = db.Column(db.Integer, db.ForeignKey("genres.id"), nullable=False)
+    director_id = db.Column(db.Integer, db.ForeignKey("directors.id"), nullable=False)
 
     genre = db.relationship("Genre")
     director = db.relationship("Director")

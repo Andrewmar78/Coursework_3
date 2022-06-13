@@ -356,5 +356,16 @@
 			"name": "Мюзикл",
 			"pk": 18
 		}
+	],
+	"users": [
+		{
+			"username": "test_user",
+			"pk": 1,
+			"surname": "test_surname",
+			"email": "test@email",
+			"password": "test_password",
+			"favourite_genre": "test_favourite_genre",
+			"role": "user"
+		}
 	]
 }

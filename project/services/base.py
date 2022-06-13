@@ -1,8 +1,9 @@
-# from sqlalchemy.orm.scoping import scoped_session
-from sqlalchemy.orm import Session
+# from typing import Union
+# from project.dao import MovieDAO, GenreDAO, DirectorDAO, UserDAO
+#
+#
+# class BaseService:
+#     def __init__(self, dao: Union[MovieDAO, GenreDAO, DirectorDAO, UserDAO]) -> None:
+#         self.dao = dao
 
-
-class BaseService:
-    # def __init__(self, session: scoped_session):
-    def __init__(self, session: Session):
-        self._db_session = session
+# Можно повыделять что-то в base.py, но слишком много заморочек. Не буду.

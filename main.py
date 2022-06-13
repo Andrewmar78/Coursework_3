@@ -7,11 +7,12 @@ from project.views.genres import genres_ns
 from flask_cors import CORS
 from project.views.movies import movies_ns
 # import logging
+
 # logging.basicConfig(filename="basic.log", level=logging.INFO)
 
 
 def create_app(config):
-    """Функция создания основного объекта app"""
+    """Функция создания основного объекта app, подключения расширений"""
     app = Flask(__name__)
     app.config.from_object(config)
     app.app_context().push()
@@ -36,43 +37,12 @@ def create_app(config):
     api.add_namespace(directors_ns)
     api.add_namespace(movies_ns)
 
-
     db.init_app(app)
     db.create_all()
 
     return app
 
 
-# def configure_app(application: Flask):
-#     """Функция подключения расширений (Flask-SQLAlchemy, Flask-RESTx, ...)"""
-#     db.init_app(application)
-#     api = Api(app)
-#     # api.add_namespace(movie_ns)
-#     api.add_namespace(director_ns)
-#     api.add_namespace(genre_ns)
-#     # api.add_namespace(auth_ns)
-#     # api.add_namespace(user_ns)
-#     # create_data(app, db)
-
-
-# def create_data(app, db):
-    # """Создание пользователей в БД"""
-    # with app.app_context():
-    #     db.create_all()
-    #
-    #     u1 = User(username="Vasya", password="my_little_pony", role="user")
-    #     u2 = User(username="Oleg", password="qwerty", role="user")
-    #     u3 = User(username="Oleg", password="P@ssw0rd", role="admin")
-        ## user_schema = UserSchema(many=True)
-        ## res = user_schema.dump([u1, u2, u3])
-
-        # with db.session.begin():
-            ## db.session.add_all(res)
-            # db.session.add_all([u1, u2, u3])
-
-
 if __name__ == '__main__':
     application = create_app(Config)
-    # configure_app(app)
-    # create_data()
     application.run(port=25000)

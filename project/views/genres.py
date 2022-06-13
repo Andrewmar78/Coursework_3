@@ -1,30 +1,35 @@
 from flask import request
 from flask_restx import abort, Namespace, Resource
 
+from project.container import genre_service
 from project.exceptions import ItemNotFound
-from project.services import GenreService
-from project.setup_db import db
+from project.schemas import GenreSchema
 
 genres_ns = Namespace("genres")
+genre_schema = GenreSchema
 
 
 @genres_ns.route("/")
 class GenresView(Resource):
-    # @auth_required
     @genres_ns.response(200, "OK")
     def get(self):
         """Get all genres"""
-        return GenreService(db.session).get_all()
+        # Для пагинации:
+        # page_number = request.args.get('page_number', type=int)
+
+        try:
+            genres = genre_service.get_all()
+            # genres = genre_service.get_all(page_number)
+            return genre_schema.dump(genres), 200
+        except ItemNotFound:
+            abort(404, message="Page is not found")
 
 
 @genres_ns.route("/<int:genre_id>")
 class GenreView(Resource):
-    # @auth_required
-    @genres_ns.response(200, "OK")
-    @genres_ns.response(404, "Genre not found")
     def get(self, genre_id: int):
-        """Get genre by id"""
         try:
-            return GenreService(db.session).get_item_by_id(genre_id)
+            genre = genre_service.get_item_by_id(genre_id)
+            return genre_schema.dump(genre), 200
         except ItemNotFound:
-            abort(404, message="Genre not found")
+            abort(404, "Genre is not found")

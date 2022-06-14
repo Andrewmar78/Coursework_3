@@ -1,3 +1,5 @@
+# Уже не актуален, т.к. запуск run.py и server.py
+
 from flask import Flask, render_template
 from flask_restx import Api
 from config import Config
@@ -7,7 +9,6 @@ from project.views.genres import genres_ns
 from flask_cors import CORS
 from project.views.movies import movies_ns
 # import logging
-
 # logging.basicConfig(filename="basic.log", level=logging.INFO)
 
 

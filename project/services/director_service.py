@@ -1,18 +1,21 @@
+from typing import List
+
 from project.dao.director import DirectorDAO
 from project.exceptions import ItemNotFound
-from project.schemas.director import DirectorSchema
 
 
 class DirectorService:
     def __init__(self, dao: DirectorDAO):
         self.dao = dao
 
-    def get_item_by_id(self, pk):
-        director = DirectorDAO(self._db_session).get_by_id(pk)
+    def get_item_by_id(self, director_id: int) -> object:
+        director = self.dao.get_by_id(director_id)
         if not director:
             raise ItemNotFound
-        return DirectorSchema().dump(director)
+        return director
 
-    def get_all(self):
-        directors = DirectorDAO(self._db_session).get_all()
-        return DirectorSchema(many=True).dump(directors)
+    def get_all(self, page_number=None) -> List[object]:
+        directors = self.dao.get_all(page_number)
+        if not directors:
+            raise ItemNotFound
+        return directors

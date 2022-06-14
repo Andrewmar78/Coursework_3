@@ -1,5 +1,4 @@
 from typing import List
-
 from project.dao import GenreDAO
 from project.exceptions import ItemNotFound
 
@@ -14,14 +13,8 @@ class GenreService:
             raise ItemNotFound
         return genre
 
-# Мое:
-    def get_all(self, ) -> List[object]:
-        genres = self.dao.get_all()
+    def get_all(self, page_number=None) -> List[object]:
+        genres = self.dao.get_all(page_number)
+        if not genres:
+            raise ItemNotFound
         return genres
-
-    #
-    # def get_all(self, page: str = None) -> List[object]:
-    #     items = self.dao.get_all(page, sort=False)
-    #     if not items:
-    #         raise ItemNotFound
-    #     return items

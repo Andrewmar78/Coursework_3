@@ -7,11 +7,13 @@ from project.schemas.director import DirectorSchema
 
 class DirectorDAO(BaseDAO):
     def get_by_id(self, director_id: int) -> Optional[DirectorSchema]:
-        director: Optional[Director] = self.session.query(Director).filter(Director.id == director_id).scalar()
+        director: Optional[Director] = self.session.query(Director).get(director_id)
+        return director
 
-        if director is not None:
-            return DirectorSchema().dump(director)
+    def get_all(self, page_number=None) -> List[object]:
+        directors = self.session.query(Director)
+        if page_number:
+            # Как-то надо доработать ниже для ITEMS_PER_PAGE != 10:
+            directors = directors.limit(10).offset(10*(page_number - 1))
 
-    def get_all(self) -> List[DirectorSchema]:
-        directors: List[Director] = self.session.query(Director).all()
-        return DirectorSchema().dump(directors, many=True)
+        return directors.all()

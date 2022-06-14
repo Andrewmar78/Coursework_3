@@ -10,11 +10,10 @@ class GenreDAO(BaseDAO):
         genre: Optional[Genre] = self.session.query(Genre).get(genre_id)
         return genre
 
-    # def get_by_id(self, pk):
-    #     return self._db_session.query(Genre).filter(Genre.id == pk).one_or_none()
-
-    def get_all(self) -> List[object]:
+    def get_all(self, page_number=None) -> List[object]:
         genres = self.session.query(Genre)
-        return genres.all()
+        if page_number:
+            # Как-то надо доработать ниже для ITEMS_PER_PAGE != 10:
+            genres = genres.limit(10).offset(10*(page_number - 1))
 
-    # Без пагинации
+        return genres.all()

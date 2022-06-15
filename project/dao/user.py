@@ -13,18 +13,16 @@ class UserDAO(BaseDAO):
 		except NoUserFound:
 			return None
 
-	def get_one(self, uid: int) -> Optional[User]:
-		try:
-			return self.session.query(User).get(uid)
-		except NoUserFound:
-			return None
+	# def get_by_id(self, uid: int) -> Optional[User]:
+	# 	try:
+	# 		return self.session.query(User).get(uid)
+	# 	except NoUserFound:
+	# 		return None
 
 	def create_user(self, user_data: dict) -> User:
 		entity = User(**user_data)
 		self.session.add(entity)
 		self.session.commit()
-		# new_user = UserSchema().dump(entity)
-		# return new_user
 		return entity
 
 	def update_user_by_email(self, user_data: dict, email: str) -> None:
@@ -33,6 +31,6 @@ class UserDAO(BaseDAO):
 		self.session.commit()
 
 	# def delete(self, uid: int) -> None:
-	# 	user_data = self.get_one(uid)
+	# 	user_data = self.get_by_id(uid)
 	# 	self.session.delete(user_data)
 	# 	self.session.commit()

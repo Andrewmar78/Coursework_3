@@ -17,7 +17,7 @@ class MovieService:
         return movie
 
     def get_all(self, page_number=None, status=None) -> List[object]:
-        # Как-то некорректно прописано со статусом ниже
+        # Не уверен, что корректно прописано со статусом ниже:
         if status != "new":
             movies = self.dao.get_all(page_number, is_status=False)
         else:

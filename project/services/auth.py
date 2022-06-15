@@ -22,12 +22,9 @@ class AuthService:
             if not self.user_service.compare_passwords(user.password, password):
                 raise IncorrectPassword
 
-        # Данные для токена
-        data = {
-            "email": user.email
-        }
-
         # Генерирование токенов
+        data = {"email": user.email}
+
         min30 = datetime.datetime.utcnow() + datetime.timedelta(minutes=current_app.config.get('TOKEN_EXPIRE_MINUTES'))
         data["exp"] = calendar.timegm(min30.timetuple())
         access_token = jwt.encode(data, SECRET_KEY, algorithm=JWT_ALGORITHM)

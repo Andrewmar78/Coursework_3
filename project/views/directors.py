@@ -1,10 +1,8 @@
 from flask import request
 from flask_restx import abort, Namespace, Resource
-from project.container import genre_service, director_service
+from project.container import director_service
 from project.exceptions import ItemNotFound
 from project.schemas import DirectorSchema
-from project.services import DirectorService
-from project.setup_db import db
 
 directors_ns = Namespace("directors")
 director_schema = DirectorSchema()

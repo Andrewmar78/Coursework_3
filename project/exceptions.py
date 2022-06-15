@@ -16,3 +16,7 @@ class UserAlreadyExists(Exception):
 class IncorrectPassword(Exception):
     def __init__(self, message=None):
         super().__init__(message)
+
+class InvalidToken(Exception):
+    def __init__(self, message=None):
+        super().__init__(message)

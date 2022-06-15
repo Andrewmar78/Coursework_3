@@ -27,17 +27,17 @@ class UserService:
 
 	def update_user(self, user_data: dict, email: str) -> None:
 		self.get_user_by_email(email)
-		if 'password' not in user_data.keys() and 'email' not in user_data.keys():
+		if 'email' not in user_data.keys() and 'password' not in user_data.keys():
 			self.dao.update_user_by_email(user_data, email)
 
 	# def delete(self, uid: int) -> None:
 	# 	self.dao.delete(uid)
 
-	def get_one(self, uid: int) -> User:
-		user = self.dao.get_one(uid)
-		if not user:
-			raise NoUserFound
-		return user
+	# def get_by_id(self, uid: int) -> User:
+	# 	user = self.dao.get_by_id(uid)
+	# 	if not user:
+	# 		raise NoUserFound
+	# 	return user
 
 	def generate_password_digest(self, password: str):
 		# from security.py

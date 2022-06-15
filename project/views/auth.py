@@ -1,7 +1,7 @@
 from flask import request
 from flask_restx import Namespace, Resource, abort
 from project.container import auth_service
-from project.exceptions import NoUserFound, IncorrectPassword, UserAlreadyExists
+from project.exceptions import NoUserFound, IncorrectPassword, UserAlreadyExists, InvalidToken
 from project.schemas import UserSchema
 from project.services import UserService
 from project.setup_db import db
@@ -9,8 +9,12 @@ from project.setup_db import db
 auth_ns = Namespace("auth")
 user_schema = UserSchema()
 
+
 @auth_ns.route("/registration/")
 class AuthView(Resource):
+    @auth_ns.doc(description='New User')
+    @auth_ns.response(201, 'Registered')
+    @auth_ns.response(400, 'Problem')
     def post(self):
         """Получение и проверка почты и пароля, регистрация пользователя"""
         req_json = request.json
@@ -25,11 +29,14 @@ class AuthView(Resource):
             new_user = UserService(db.session).create_user(user_data)
             return "", 201, {"location": f"/user/{new_user.id}"}
         except UserAlreadyExists:
-            abort(400, 'User already exists')
+            abort(400, 'User exists')
 
 
 @auth_ns.route('/login/')
 class AuthView(Resource):
+    @auth_ns.doc(description='User entering')
+    @auth_ns.response(201, 'User entered')
+    @auth_ns.response(400, 'Problem')
     def post(self):
         """Получение и проверка почты и пароля, создание токенов"""
         req_json = request.json
@@ -37,7 +44,6 @@ class AuthView(Resource):
         password = req_json.get("password", None)
         if None in [email, password]:
             abort(400, 'Incorrect email or password')
-
         try:
             tokens = auth_service.generate_tokens(email, password)
             return tokens, 201
@@ -46,11 +52,18 @@ class AuthView(Resource):
         except IncorrectPassword:
             abort(401, 'Incorrect password')
 
+    @auth_ns.doc(description='New tokens')
+    @auth_ns.response(201, 'Tokens received')
+    @auth_ns.response(401, 'Invalid token')
     def put(self):
         """Проверка даты и получение токена"""
-        refresh_token = request.json.get('refresh_token')
-        if not refresh_token:
-            abort(400, '')
+        try:
+            refresh_token = request.json.get('refresh_token')
+            if not refresh_token:
+                abort(400, '')
+            tokens = auth_service.approve_refresh_token(refresh_token)
+            return tokens, 201
 
-        tokens = auth_service.approve_refresh_token(refresh_token)
-        return tokens, 201
+        except InvalidToken:
+            abort(401, 'Invalid token passed')
+

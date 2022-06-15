@@ -1,4 +1,7 @@
 from typing import List, Optional
+
+from flask import current_app
+
 from project.dao.base import BaseDAO
 from project.dao.models import Genre
 from project.schemas.genre import GenreSchema
@@ -13,7 +16,6 @@ class GenreDAO(BaseDAO):
     def get_all(self, page_number=None) -> List[object]:
         genres = self.session.query(Genre)
         if page_number:
-            # Как-то надо доработать ниже для ITEMS_PER_PAGE != 10:
-            genres = genres.limit(10).offset(10*(page_number - 1))
-
+            genres = genres.limit(current_app.config.get('ITEMS_PER_PAGE'))\
+                .offset(current_app.config.get('ITEMS_PER_PAGE')*(page_number - 1))
         return genres.all()

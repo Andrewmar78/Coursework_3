@@ -1,7 +1,8 @@
+from flask import current_app
 from sqlalchemy import desc
 
 from project.dao.base import BaseDAO
-from project.dao.models import Director, Movie
+from project.dao.models import Movie
 from typing import List, Optional
 
 from project.schemas.movie import MovieSchema
@@ -19,7 +20,6 @@ class MovieDAO(BaseDAO):
             movies = movies.order_by(desc(Movie.year))
 
         if page_number:
-            # Как-то надо доработать ниже для ITEMS_PER_PAGE != 10:
-            movies = movies.limit(10).offset(10*(page_number - 1))
-
+            movies = movies.limit(current_app.config.get('ITEMS_PER_PAGE'))\
+                .offset(current_app.config.get('ITEMS_PER_PAGE')*(page_number - 1))
         return movies.all()

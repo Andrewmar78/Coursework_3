@@ -14,6 +14,7 @@ movie_schema = MovieSchema()
 @movies_ns.route("/")
 class MoviesView(Resource):
     # @auth_required
+    @movies_ns.doc(description='Get all movies')
     @movies_ns.response(200, 'Success')
     @movies_ns.response(404, 'Not found')
     def get(self):
@@ -31,6 +32,7 @@ class MoviesView(Resource):
 @movies_ns.route("/<int:movie_id>")
 class MovieView(Resource):
     # @auth_required
+    @movies_ns.doc(description='Get one movie by id')
     @movies_ns.response(200, "OK")
     @movies_ns.response(404, "Movie not found")
     def get(self, movie_id: int):

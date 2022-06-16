@@ -20,7 +20,7 @@ class UsersView(Resource):
     @user_ns.doc(description='Get one user by id')
     @user_ns.response(200, 'OK')
     @user_ns.response(404, 'Not Found')
-    def get(self, refresh_token):
+    def get(self):
         """Получение токена, обновление данных"""
         try:
             auth_data = request.headers['Authorization']

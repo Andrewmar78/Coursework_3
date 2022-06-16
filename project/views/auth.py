@@ -1,6 +1,6 @@
 from flask import request
 from flask_restx import Namespace, Resource, abort
-from project.container import auth_service
+from project.container import auth_service, user_service
 from project.exceptions import NoUserFound, IncorrectPassword, UserAlreadyExists, InvalidToken
 from project.schemas import UserSchema
 from project.services import UserService
@@ -10,7 +10,7 @@ auth_ns = Namespace("auth")
 user_schema = UserSchema()
 
 
-@auth_ns.route("/registration/")
+@auth_ns.route("/register/")
 class AuthView(Resource):
     @auth_ns.doc(description='New User')
     @auth_ns.response(201, 'Registered')
@@ -26,7 +26,8 @@ class AuthView(Resource):
 
         try:
             user_data = user_schema.load(created_data)
-            new_user = UserService(db.session).create_user(user_data)
+            new_user = user_service.create_user(user_data)
+            # new_user = UserService(db.session).create_user(user_data)
             return "", 201, {"location": f"/user/{new_user.id}"}
         except UserAlreadyExists:
             abort(400, 'User exists')

@@ -4,7 +4,7 @@ from project.setup_db import db
 
 class User(BaseModel):
     __tablename__ = "users"
-    __table_args__ = {'extend_existing': True}
+    # __table_args__ = {'extend_existing': True}
 
     username = db.Column(db.String(100), unique=False, nullable=True, default="no_name")
     surname = db.Column(db.String(100), unique=False, nullable=True, default=None)

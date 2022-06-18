@@ -1,13 +1,12 @@
 import jwt
-from flask import request
+from flask import request, current_app
 from flask_restx import Resource, Namespace, abort
 from helpers.decorators import auth_required
-from project.constants import JWT_ALGORITHM, JWT_SECRET
+from project.constants import JWT_ALGORITHM
 from project.container import auth_service, user_service
 from project.exceptions import NoUserFound, IncorrectPassword, ItemNotFound
 from project.schemas import UserSchema
-from project.services import UserService
-from project.setup_db import db
+
 from project.views.auth import user_schema
 
 user_ns = Namespace('user')
@@ -25,9 +24,8 @@ class UsersView(Resource):
         try:
             auth_data = request.headers['Authorization']
             token = auth_data.split("Bearer ")[-1]
-            data = jwt.decode(jwt=token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
+            data = jwt.decode(jwt=token, key=current_app.config.get('SECRET_KEY'), algorithms=JWT_ALGORITHM)
             email = data.get("email")
-            # user = UserService(db.session).get_user_by_email(email)
             user = user_service.get_user_by_email(email)
 
             return user_schema.dump(user), 200
@@ -42,11 +40,10 @@ class UsersView(Resource):
         try:
             auth_data = request.headers['Authorization']
             token = auth_data.split("Bearer ")[-1]
-            data = jwt.decode(jwt=token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
+            data = jwt.decode(jwt=token, key=current_app.config.get('SECRET_KEY'), algorithms=JWT_ALGORITHM)
             email = data.get("email")
 
             new_data = user_schema.dump(request.json)
-            # UserService(db.session).update_user(new_data, email)
             user_service.update_user(new_data, email)
             return "", 200
         except NoUserFound:

@@ -2,7 +2,6 @@ from typing import Optional
 from project.dao.base import BaseDAO
 from project.dao.models import User
 from project.exceptions import NoUserFound
-from project.schemas.user import UserSchema
 
 
 class UserDAO(BaseDAO):
@@ -12,11 +11,11 @@ class UserDAO(BaseDAO):
 		except NoUserFound:
 			return None
 
-	# def get_by_id(self, uid: int) -> Optional[User]:
-	# 	try:
-	# 		return self.session.query(User).get(uid)
-	# 	except NoUserFound:
-	# 		return None
+	def get_by_id(self, uid: int) -> Optional[User]:
+		try:
+			return self.session.query(User).get(uid)
+		except NoUserFound:
+			return None
 
 	def create_user(self, user_data: dict) -> User:
 		entity = User(**user_data)

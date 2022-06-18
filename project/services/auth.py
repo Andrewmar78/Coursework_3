@@ -4,7 +4,7 @@ import jwt
 from flask import current_app
 from flask_restx import abort
 
-from project.constants import SECRET_KEY, JWT_SECRET, JWT_ALGORITHM
+from project.constants import JWT_ALGORITHM
 from project.exceptions import IncorrectPassword, NoUserFound
 
 
@@ -28,11 +28,11 @@ class AuthService:
 
         min30 = datetime.datetime.utcnow() + datetime.timedelta(minutes=current_app.config.get('TOKEN_EXPIRE_MINUTES'))
         data["exp"] = calendar.timegm(min30.timetuple())
-        access_token = jwt.encode(data, SECRET_KEY, algorithm=JWT_ALGORITHM)
+        access_token = jwt.encode(data,  key=current_app.config.get('SECRET_KEY'), algorithm=JWT_ALGORITHM)
 
         days30 = datetime.datetime.utcnow() + datetime.timedelta(days=current_app.config.get('TOKEN_EXPIRE_DAYS'))
         data["exp"] = calendar.timegm(days30.timetuple())
-        refresh_token = jwt.encode(data, SECRET_KEY, algorithm=JWT_ALGORITHM)
+        refresh_token = jwt.encode(data,  key=current_app.config.get('SECRET_KEY'), algorithm=JWT_ALGORITHM)
 
         return {
             "access_token": access_token,
@@ -41,7 +41,7 @@ class AuthService:
 
     def approve_refresh_token(self, refresh_token) -> dict:
         """Получение почты из токена и создание новых токенов"""
-        data = jwt.decode(jwt=refresh_token, key=JWT_SECRET, algorithms=JWT_ALGORITHM)
+        data = jwt.decode(jwt=refresh_token, key=current_app.config.get('SECRET_KEY'), algorithms=JWT_ALGORITHM)
         email = data.get("email")
         user = self.user_service.get_user_by_email(email)
         if not user:

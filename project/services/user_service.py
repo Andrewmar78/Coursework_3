@@ -1,10 +1,14 @@
 import base64
 import hashlib
 import hmac
+
+from flask import current_app
+
 from project.dao.models import User
 from project.dao.user import UserDAO
 from project.constants import PWD_HASH_SALT, PWD_HASH_ITERATIONS
 from project.exceptions import NoUserFound, UserAlreadyExists, IncorrectPassword
+from project.tools.security import generate_password_digest
 
 
 class UserService:
@@ -45,8 +49,8 @@ class UserService:
 		hash_digest = hashlib.pbkdf2_hmac(
 			hash_name="sha256",
 			password=password.encode("utf-8"),
-			salt=PWD_HASH_SALT,
-			iterations=PWD_HASH_ITERATIONS
+			salt=current_app.config["PWD_HASH_SALT"],
+			iterations=current_app.config["PWD_HASH_ITERATIONS"],
 		)
 		return hash_digest
 

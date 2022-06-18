@@ -4,6 +4,7 @@ from flask import current_app
 
 
 def generate_password_digest(password):
+    """ Создание хэшированного пароля"""
     return hashlib.pbkdf2_hmac(
         hash_name="sha256",
         password=password.encode("utf-8"),

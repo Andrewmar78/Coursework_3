@@ -7,11 +7,11 @@ from project.schemas import MovieSchema
 from project.services import MovieService
 from project.setup_db import db
 
-movies_ns = Namespace("movies")
+movies_ns = Namespace("/")
 movie_schema = MovieSchema()
 
 
-@movies_ns.route("/")
+@movies_ns.route("/movies/")
 class MoviesView(Resource):
     # @auth_required
     @movies_ns.doc(description='Get all movies')
@@ -29,7 +29,7 @@ class MoviesView(Resource):
             abort(404, message="Page is not found")
 
 
-@movies_ns.route("/<int:movie_id>")
+@movies_ns.route("/movies/<int:movie_id>/")
 class MovieView(Resource):
     # @auth_required
     @movies_ns.doc(description='Get one movie by id')

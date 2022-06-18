@@ -4,11 +4,11 @@ from project.container import genre_service
 from project.exceptions import ItemNotFound
 from project.schemas import GenreSchema
 
-genres_ns = Namespace("genres")
+genres_ns = Namespace("/")
 genre_schema = GenreSchema()
 
 
-@genres_ns.route("/")
+@genres_ns.route("/genres/")
 class GenresView(Resource):
     @genres_ns.response(200, "OK")
     def get(self):
@@ -24,7 +24,7 @@ class GenresView(Resource):
             abort(404, message="Page is not found")
 
 
-@genres_ns.route("/<int:genre_id>")
+@genres_ns.route("/genre/<int:genre_id>/")
 class GenreView(Resource):
     @genres_ns.response(200, "OK")
     @genres_ns.response(404, "Director is not found")

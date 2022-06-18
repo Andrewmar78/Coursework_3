@@ -4,11 +4,11 @@ from project.container import director_service
 from project.exceptions import ItemNotFound
 from project.schemas import DirectorSchema
 
-directors_ns = Namespace("directors")
+directors_ns = Namespace("/")
 director_schema = DirectorSchema()
 
 
-@directors_ns.route("/")
+@directors_ns.route("/directors/")
 class DirectorsView(Resource):
     @directors_ns.response(200, "OK")
     def get(self):
@@ -22,7 +22,7 @@ class DirectorsView(Resource):
             abort(404, message="Page is not found")
 
 
-@directors_ns.route("/<int:director_id>")
+@directors_ns.route("/director/<int:director_id>/")
 class DirectorView(Resource):
     @directors_ns.response(200, "OK")
     @directors_ns.response(404, "Director is not found")

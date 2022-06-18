@@ -3,11 +3,11 @@ from flask_restx import Namespace, Resource, abort
 from project.container import auth_service, user_service
 from project.exceptions import NoUserFound, IncorrectPassword, UserAlreadyExists, InvalidToken
 from project.schemas import UserSchema
-from project.services import UserService
-from project.setup_db import db
+from project.schemas.auth import AuthSchema
 
 auth_ns = Namespace("auth")
 user_schema = UserSchema()
+auth_schema = AuthSchema()
 
 
 @auth_ns.route("/register/")
@@ -16,7 +16,7 @@ class AuthView(Resource):
     @auth_ns.response(201, 'Registered')
     @auth_ns.response(400, 'Problem')
     def post(self):
-        """Получение и проверка почты и пароля, регистрация пользователя"""
+        """Получение и проверка наличия почты и пароля, регистрация пользователя"""
         req_json = request.json
         email = req_json.get("email", None)
         password = req_json.get("password", None)
@@ -25,9 +25,9 @@ class AuthView(Resource):
             return "Incorrect fields fulfilled", 400
 
         try:
-            user_data = user_schema.load(created_data)
+            # user_data = user_schema.load(created_data)
+            user_data = auth_schema.load(created_data)
             new_user = user_service.create_user(user_data)
-            # new_user = UserService(db.session).create_user(user_data)
             return "", 201, {"location": f"/user/{new_user.id}"}
         except UserAlreadyExists:
             abort(400, 'User exists')
@@ -39,7 +39,7 @@ class AuthView(Resource):
     @auth_ns.response(201, 'User entered')
     @auth_ns.response(400, 'Problem')
     def post(self):
-        """Получение и проверка почты и пароля, создание токенов"""
+        """Получение и проверка наличия почты и пароля, создание токенов"""
         req_json = request.json
         email = req_json.get("email", None)
         password = req_json.get("password", None)

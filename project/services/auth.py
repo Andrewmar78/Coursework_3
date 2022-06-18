@@ -13,6 +13,7 @@ class AuthService:
         self.user_service = user_service
 
     def generate_tokens(self, email, password, is_refreshed=False):
+        """Проверка пароля для введенной почты и создание токенов"""
         user = self.user_service.get_user_by_email(email)
 
         if not user:

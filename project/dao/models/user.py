@@ -6,8 +6,8 @@ class User(BaseModel):
     __tablename__ = "users"
     __table_args__ = {'extend_existing': True}
 
-    username = db.Column(db.String(100), unique=False, nullable=False)
-    surname = db.Column(db.String(100), unique=False, nullable=True)
+    username = db.Column(db.String(100), unique=False, nullable=True, default=None)
+    surname = db.Column(db.String(100), unique=False, nullable=True, default=None)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String, unique=False, nullable=False)
     favourite_genre = db.Column(db.Integer, db.ForeignKey("genres.id"))

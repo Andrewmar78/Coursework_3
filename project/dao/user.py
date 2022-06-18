@@ -1,4 +1,3 @@
-#  Недоработан
 from typing import Optional
 from project.dao.base import BaseDAO
 from project.dao.models import User
@@ -9,7 +8,7 @@ from project.schemas.user import UserSchema
 class UserDAO(BaseDAO):
 	def get_user_by_email(self, email: str) -> Optional[User]:
 		try:
-			return self.session.query(User).filter(User.email == email).one()
+			return self.session.query(User).filter(User.email == email).one_or_none()
 		except NoUserFound:
 			return None
 

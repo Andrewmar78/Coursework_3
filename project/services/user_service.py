@@ -61,15 +61,20 @@ class UserService:
 		return encoded_digest
 
 	def compare_passwords(self, password_hash, other_password) -> bool:
-		"""Сравнение вводимого и заданного паролей"""
+	# def compare_passwords(self, password_hash, password) -> bool:
+		"""Сравнение вводимого пароля и пароля в базе"""
 		decoded_digest = base64.b64decode(password_hash)
+		# passed_hash = self.generate_password_digest(password)
 		passed_hash = self.generate_password_digest(other_password)
 		return hmac.compare_digest(decoded_digest, passed_hash)
 
 	def update_password(self, data: dict, email: str) -> None:
 		user = self.get_user_by_email(email)
-		current_password = data.get('current_password')
+		current_password = data.get('old_password')
 		new_password = data.get('new_password')
+		print("user.password:", user.password)
+		print("current_password:", current_password)
+		print("new_password:", new_password)
 
 		if not self.compare_passwords(user.password, current_password):
 			raise IncorrectPassword

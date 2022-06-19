@@ -36,13 +36,12 @@ class UsersView(Resource):
     @user_ns.doc(description='Get one user by id')
     @user_ns.response(200, 'OK')
     @user_ns.response(404, 'Not Found')
-    def post(self):
+    def patch(self):
         try:
             auth_data = request.headers['Authorization']
             token = auth_data.split("Bearer ")[-1]
             data = jwt.decode(jwt=token, key=current_app.config.get('SECRET_KEY'), algorithms=JWT_ALGORITHM)
             email = data.get("email")
-
             new_data = user_schema.dump(request.json)
             user_service.update_user(new_data, email)
             return "", 200
@@ -62,8 +61,15 @@ class PasswordView(Resource):
         try:
             auth_data = request.headers['Authorization']
             token = auth_data.split("Bearer ")[-1]
-            email = auth_service.get_email_from_token(token)
+            # email = auth_service.get_email_from_token(token)
+
+            data = jwt.decode(jwt=token, key=current_app.config.get('SECRET_KEY'), algorithms=JWT_ALGORITHM)
+            email = data.get("email")
+
             passwords = request.json
+            print("data:", data)
+            print("email:", email)
+            print("pass:", passwords)
             user_service.update_password(passwords, email)
             return "", 200
         except IncorrectPassword:

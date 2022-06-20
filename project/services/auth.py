@@ -3,7 +3,6 @@ import calendar
 import jwt
 from flask import current_app
 from flask_restx import abort
-
 from project.constants import JWT_ALGORITHM
 from project.exceptions import IncorrectPassword, NoUserFound
 

@@ -37,6 +37,7 @@ class UsersView(Resource):
     @user_ns.response(200, 'OK')
     @user_ns.response(404, 'Not Found')
     def patch(self):
+        """Получение токена, обновление данных"""
         try:
             auth_data = request.headers['Authorization']
             token = auth_data.split("Bearer ")[-1]
@@ -61,15 +62,9 @@ class PasswordView(Resource):
         try:
             auth_data = request.headers['Authorization']
             token = auth_data.split("Bearer ")[-1]
-            # email = auth_service.get_email_from_token(token)
-
             data = jwt.decode(jwt=token, key=current_app.config.get('SECRET_KEY'), algorithms=JWT_ALGORITHM)
             email = data.get("email")
-
             passwords = request.json
-            print("data:", data)
-            print("email:", email)
-            print("pass:", passwords)
             user_service.update_password(passwords, email)
             return "", 200
         except IncorrectPassword:
